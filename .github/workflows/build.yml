@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - 'master'
+      - 'jwilson.0707.publish_windows'
     tags-ignore:
       - '**'
 
@@ -131,7 +132,7 @@ jobs:
 
   publish-windows:
     runs-on: windows-latest
-    if: github.repository == 'square/okio' && github.ref == 'refs/heads/master'
+    if: github.repository == 'square/okio'
     needs: [jvm, all-platforms, emulator]
 
     steps:
@@ -146,7 +147,7 @@ jobs:
 
       - name: Upload Artifacts
         run: |
-          ./gradlew clean publishMingwX64PublicationToMavenCentralRepository --stacktrace
+          ./gradlew publishMingwX64PublicationToMavenCentralRepository --stacktrace
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
