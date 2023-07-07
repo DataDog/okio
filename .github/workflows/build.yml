@@ -133,7 +133,6 @@ jobs:
   publish-windows:
     runs-on: windows-latest
     if: github.repository == 'square/okio'
-    needs: [jvm, all-platforms, emulator]
 
     steps:
       - name: Checkout
