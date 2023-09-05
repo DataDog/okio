@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+## Version 1.17.6
+
+_2023-09-06_
+
+ * Fix: Buffer length conversion bug. Avoids potential [denial of service](https://nvd.nist.gov/vuln/detail/CVE-2023-3635).
+
 ## Version 1.15.0
 
 _2018-07-18_
