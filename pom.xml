@@ -15,7 +15,18 @@
   <packaging>pom</packaging>
   <name>Okio (Parent)</name>
   <description>A modern I/O API for Java</description>
-  <url>https://github.com/square/okio</url>
+  <url>https://github.com/DataDog/okio</url>
+
+  <developers>
+    <developer>
+      <id>square</id>
+      <name>Square, Inc.</name>
+    </developer>
+    <developer>
+      <id>datadog</id>
+      <name>Datadog</name>
+    </developer>
+  </developers>
 
   <modules>
     <module>okio</module>
@@ -36,15 +47,15 @@
   </properties>
 
   <scm>
-    <url>https://github.com/square/okio/</url>
-    <connection>scm:git:https://github.com/square/okio.git</connection>
-    <developerConnection>scm:git:git@github.com:square/okio.git</developerConnection>
+    <url>https://github.com/DataDog/okio/</url>
+    <connection>scm:git:https://github.com/DataDog/okio.git</connection>
+    <developerConnection>scm:git:git@github.com:DataDog/okio.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://github.com/square/okio/issues</url>
+    <url>https://github.com/DataDog/okio/issues</url>
   </issueManagement>
 
   <licenses>
@@ -152,4 +163,98 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!-- Performing a release deployment requires setting of performRelease property -->
+    <profile>
+      <id>deploy-artifacts</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>performRelease</name>
+          <value>true</value>
+        </property>
+      </activation>
+
+      <distributionManagement>
+        <snapshotRepository>
+          <id>nexus</id>
+          <!-- Use the localhost endpoint for testing -->
+          <!-- <url>http://localhost:8081/repository/maven-snapshots/</url> -->
+          <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+          <id>nexus</id>
+          <!-- Use the localhost endpoint for testing -->
+          <!-- <url>http://localhost:8081/repository/maven-releases/</url> -->
+          <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+      </distributionManagement>
+
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.2.1</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9.1</version>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.6.6</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>nexus</serverId>
+              <!-- Use the localhost endpoint for testing -->
+              <!-- <nexusUrl>http://localhost:8081/repository/maven-releases/</nexusUrl> -->
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>false</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+                <configuration>
+                  <gpgArguments>
+                    <arg>--pinentry-mode</arg>
+                    <arg>loopback</arg>
+                  </gpgArguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
 </project>
